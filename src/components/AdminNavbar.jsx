@@ -1,5 +1,5 @@
 // src/components/AdminNavbar.js
-import React, { useState } from "react";
+import React from "react";
 import {
   Navbar,
   Container,
@@ -13,16 +13,6 @@ import { Link } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 
 const AdminNavbar = () => {
-  const [search, setSearch] = useState("");
-
-  const handleSearchChange = (e) => setSearch(e.target.value);
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    // Implement your search action here
-    console.log("Searching for:", search);
-  };
-
   const handleLogout = () => {
     // Implement logout action here
     console.log("Logging out...");
@@ -38,19 +28,6 @@ const AdminNavbar = () => {
         <Navbar.Collapse id="navbar-nav">
           <div className="ms-auto d-flex align-items-center">
             {/* Search Bar */}
-            <Form className="d-flex me-3" onSubmit={handleSearchSubmit}>
-              <FormControl
-                type="search"
-                placeholder="Search..."
-                className="me-2"
-                aria-label="Search"
-                value={search}
-                onChange={handleSearchChange}
-              />
-              <Button variant="outline-success" type="submit">
-                Search
-              </Button>
-            </Form>
 
             {/* Notifications Dropdown */}
             <Dropdown className="me-3">

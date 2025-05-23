@@ -14,7 +14,7 @@ const Sidebar = () => {
       onMouseLeave={() => setIsHovered(false)}
       style={{
         width: isHovered ? "200px" : "60px",
-        transition: "width 0.3s ease",
+        transition: "width 1.2s ease",
         minHeight: "100vh",
       }}
     >
