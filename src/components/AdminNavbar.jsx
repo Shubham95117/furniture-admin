@@ -1,20 +1,17 @@
 // src/components/AdminNavbar.js
 import React from "react";
-import {
-  Navbar,
-  Container,
-  Form,
-  FormControl,
-  Button,
-  Dropdown,
-  Badge,
-} from "react-bootstrap";
+import { Navbar, Container, Dropdown } from "react-bootstrap";
+import { CgProfile } from "react-icons/cg";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/authSlice";
 import { Link } from "react-router-dom";
-import { FaBell } from "react-icons/fa";
 
 const AdminNavbar = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
   const handleLogout = () => {
-    // Implement logout action here
+    dispatch(logout());
     console.log("Logging out...");
   };
 
@@ -22,33 +19,24 @@ const AdminNavbar = () => {
     <Navbar bg="light" expand="lg" className="shadow-sm">
       <Container fluid>
         <Navbar.Brand as={Link} to="/">
-          Admin Panel
+          {user && user.displayName ? user.displayName : "Admin Panel"}
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbar-nav" />
-        <Navbar.Collapse id="navbar-nav">
-          <div className="ms-auto d-flex align-items-center">
-            {/* Search Bar */}
-
-            {/* Notifications Dropdown */}
-            <Dropdown className="me-3">
-              <Dropdown.Toggle variant="light" id="dropdown-basic">
-                <FaBell size={20} />
-                <Badge bg="danger" pill className="ms-1">
-                  3
-                </Badge>
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Notification 1</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Notification 2</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Notification 3</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-
-            {/* Logout Button */}
-            <Button variant="outline-danger" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
+        <Navbar.Toggle aria-controls="admin-navbar-nav" />
+        <Navbar.Collapse id="admin-navbar-nav" className="justify-content-end">
+          <Dropdown align="end">
+            <Dropdown.Toggle variant="light" id="dropdown-profile">
+              <CgProfile size={40} />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {/* <Dropdown.Item as={Link} to="/settings">
+                Settings
+              </Dropdown.Item> */}
+              {/* <Dropdown.Divider /> */}
+              <Dropdown.Item onClick={handleLogout} className="text-danger">
+                Logout
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Navbar.Collapse>
       </Container>
     </Navbar>

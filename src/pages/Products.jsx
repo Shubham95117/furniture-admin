@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import ProductForm from "./ProductForm";
 import axios from "axios";
-import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Modal,
+} from "react-bootstrap";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showProductForm, setShowProductForm] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(""); // For filtering
+
+  // State for editing a product
+  const [editingProduct, setEditingProduct] = useState(null);
 
   // Firebase endpoint for "products" node
   const api = "https://furni-c5aaa-default-rtdb.firebaseio.com/products.json";
@@ -47,8 +58,30 @@ const Products = () => {
     }
   };
 
+  // Edit handler – set the selected product for editing
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+  };
+
+  // Update handler – send updated product info to Firebase
+  const handleUpdate = async () => {
+    if (!editingProduct) return;
+    try {
+      const updateUrl = `https://furni-c5aaa-default-rtdb.firebaseio.com/products/${editingProduct.id}.json`;
+      await axios.put(updateUrl, editingProduct);
+      setEditingProduct(null);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
   if (loading) {
-    return <p>Loading products...</p>;
+    return (
+      <p className="d-flex justify-content-center text-dark fw-bold">
+        Loading products...
+      </p>
+    );
   }
 
   // Filter products based on selected category (if chosen)
@@ -98,7 +131,7 @@ const Products = () => {
 
       {/* Products Grid */}
       <Row>
-        {filteredProducts.length == 0 ? (
+        {filteredProducts.length === 0 ? (
           <h2 className="d-flex justify-content-center">No products found</h2>
         ) : (
           filteredProducts.map((product) => (
@@ -130,7 +163,11 @@ const Products = () => {
                   )}
                 </Card.Body>
                 <Card.Footer className="d-flex justify-content-between">
-                  <Button variant="outline-primary" size="sm">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={() => handleEdit(product)}
+                  >
                     Edit
                   </Button>
                   <Button
@@ -146,6 +183,102 @@ const Products = () => {
           ))
         )}
       </Row>
+
+      {/* Edit Product Modal */}
+      <Modal
+        show={editingProduct !== null}
+        onHide={() => setEditingProduct(null)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {editingProduct && (
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Product Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={editingProduct.productName}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      productName: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Category</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={editingProduct.mainCategory}
+                  onChange={(e) =>
+                    setEditingProduct({
+                      ...editingProduct,
+                      mainCategory: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
+              {editingProduct.quantity !== undefined && (
+                <Form.Group className="mb-3">
+                  <Form.Label>Quantity</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={editingProduct.quantity}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        quantity: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+              )}
+              {editingProduct.description !== undefined && (
+                <Form.Group className="mb-3">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    value={editingProduct.description}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+              )}
+              {editingProduct.imageUrl !== undefined && (
+                <Form.Group className="mb-3">
+                  <Form.Label>Image URL</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={editingProduct.imageUrl}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        imageUrl: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+              )}
+            </Form>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setEditingProduct(null)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleUpdate}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

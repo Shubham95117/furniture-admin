@@ -36,6 +36,7 @@ const ProductForm = ({ setShowProductForm, onProductAdded }) => {
     office: {
       subCategories: {
         offficeTables: ["laptop table", "desk"],
+        chairs: ["office chairs", "gaming chairs"],
       },
     },
   };
