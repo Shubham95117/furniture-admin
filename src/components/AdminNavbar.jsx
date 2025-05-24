@@ -27,12 +27,12 @@ const AdminNavbar = () => {
             <Dropdown.Toggle variant="light" id="dropdown-profile">
               <CgProfile size={40} />
             </Dropdown.Toggle>
-            <Dropdown.Menu>
+            <Dropdown.Menu className="text-bg-light text-center ">
               {/* <Dropdown.Item as={Link} to="/settings">
                 Settings
               </Dropdown.Item> */}
               {/* <Dropdown.Divider /> */}
-              <Dropdown.Item onClick={handleLogout} className="text-danger">
+              <Dropdown.Item onClick={handleLogout} className="text-danger ">
                 Logout
               </Dropdown.Item>
             </Dropdown.Menu>
